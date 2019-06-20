@@ -13,7 +13,9 @@ python fetch_cookbook.py
 
 ### 	
 
-### ipynb目录中已完成下载
+ipynb目录中已完成下载，**Cell -> Run All** 生成输出。
+
+![](https://raw.githubusercontent.com/sseaky/public/dev/imgs/20190620115918.png)
 
 
 

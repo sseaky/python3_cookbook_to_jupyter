@@ -90,7 +90,7 @@ class Chapter:
         TEMPLATE['cells'] = cells
         dpath = Path('ipynb')
         dpath.mkdir(exist_ok=True)
-        open(str(dpath / '{}.ipynb'.format(self.chapter_title)), 'w').write(json.dumps(TEMPLATE))
+        open(str(dpath / '{}.ipynb'.format(self.chapter_title)), 'w').write(json.dumps(TEMPLATE, indent=2))
 
     def fetch_content(self, url):
         content = self.fetch(url)
@@ -125,24 +125,26 @@ class Chapter:
             elif tag.name == 'pre':
                 if '>>>' not in tag.text:
                     # code
-                    block = tag.text
+                    source = tag.text
                 else:
                     # idle
-                    block = ''
+                    source = []
                     for line in tag.text.split('\n'):
-                        if line[:3] in ['>>>', '...']:
-                            block += line.replace('>>>', '').replace('...', '') + '\n'
+                        if re.search('^(>|\.){3}', line):
+                            if re.search('^(>|\.){3}\s*$', line):
+                                continue
+                            source.append(re.sub('^(>|\.){3} ', '', line))
                         else:
-                            if block.strip():
+                            if source:
                                 cell = deepcopy(cell_code)
-                                cell['source'].append(re.sub('(^\n+|\n+$)', '', block, re.MULTILINE))
+                                cell['source'].append('\n'.join(source))
                                 cells.append(cell)
-                                block = ''
+                                source = []
                             else:
                                 continue
-                if block.strip():
+                if source:
                     cell = deepcopy(cell_code)
-                    cell['source'].append(re.sub('\n+$', '', block, re.MULTILINE))
+                    cell['source'].append('\n'.join(source))
                     cells.append(cell)
         for cell in cells:
             for i, text in enumerate(cell['source']):
