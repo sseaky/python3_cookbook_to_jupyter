@@ -79,17 +79,24 @@ class Chapter:
             if x['href'] not in self.sections:
                 self.sections.append(x['href'])
 
-    def fetch_sections(self):
+    def fetch_sections(self, sep=False):
         cells = [{
             "cell_type": "markdown",
             "metadata": {},
             "source": ['# {}\n {}'.format(self.chapter_title, self.chapter_desc)]
         }]
-        for href in self.sections[:]:
-            cells.extend(self.fetch_content(self.path + href))
-        TEMPLATE['cells'] = cells
         dpath = Path('ipynb')
         dpath.mkdir(exist_ok=True)
+        for href in self.sections[:]:
+            _cells = self.fetch_content(self.path + href)
+            if sep:
+                _dpath = dpath / self.chapter_title
+                _dpath.mkdir(exist_ok=True)
+                TEMPLATE['cells'] = _cells
+                *_, section_name = href.split('/')
+                open(str(_dpath / '{}.ipynb'.format(section_name.split('.')[0])), 'w').write(json.dumps(TEMPLATE, indent=2))
+            cells.extend(_cells)
+        TEMPLATE['cells'] = cells
         open(str(dpath / '{}.ipynb'.format(self.chapter_title)), 'w').write(json.dumps(TEMPLATE, indent=2))
 
     def fetch_content(self, url):
@@ -152,17 +159,17 @@ class Chapter:
         return cells
 
 
-def fetch_all():
+def fetch_all(sep=False):
     content = requests.get('https://python3-cookbook.readthedocs.io/zh_CN/latest/').content
     soup = BeautifulSoup(content)
-    for x in soup.find_all('a', class_='reference internal', href=re.compile('chapters/p\d+'))[:15]:
+    for x in soup.find_all('a', class_='reference internal', href=re.compile('chapters/p\d+'))[2:15]:
         ch = Chapter('https://python3-cookbook.readthedocs.io/zh_CN/latest/' + x['href'])
         ch.fetch_list()
-        ch.fetch_sections()
+        ch.fetch_sections(sep=sep)
 
 
 if __name__ == '__main__':
     # ch = Chapter('https://python3-cookbook.readthedocs.io/zh_CN/latest/chapters/p01_data_structures_algorithms.html')
     # ch.fetch_list()
     # ch.fetch_sections()
-    fetch_all()
+    fetch_all(sep=True)
