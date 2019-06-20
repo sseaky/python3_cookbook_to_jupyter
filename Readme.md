@@ -1,6 +1,6 @@
 # About
 
-抓取 [python3-cookbook](https://python3-cookbook.readthedocs.io/zh_CN/latest/) 并转成 Jupyter。
+抓取 [python3-cookbook](https://python3-cookbook.readthedocs.io/zh_CN/latest/) 并转成 jupyter notebook。
 
 
 
@@ -17,7 +17,7 @@ python fetch_cookbook.py
 
 
 
-### Jupyter
+### Notebook
 
 ![](https://raw.githubusercontent.com/sseaky/public/dev/imgs/20190619175158.png)
 
