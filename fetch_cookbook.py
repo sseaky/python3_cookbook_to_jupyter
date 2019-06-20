@@ -125,7 +125,7 @@ class Chapter:
             elif tag.name == 'pre':
                 if '>>>' not in tag.text:
                     # code
-                    source = tag.text
+                    source = [re.sub('(^\n*|\n*$)', '', tag.text)]
                 else:
                     # idle
                     source = []
@@ -137,7 +137,7 @@ class Chapter:
                         else:
                             if source:
                                 cell = deepcopy(cell_code)
-                                cell['source'].append('\n'.join(source))
+                                cell['source'].append(re.sub('(^\n*|\n*$)', '', '\n'.join(source)))
                                 cells.append(cell)
                                 source = []
                             else:
