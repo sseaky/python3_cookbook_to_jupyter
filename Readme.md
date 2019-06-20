@@ -7,8 +7,9 @@
 # 使用
 
 ```
-pip install requests beautifulsoup4
-python fetch_cookbook.py
+pip install requests beautifulsoup4 jupyter
+# python fetch_cookbook.py
+jupyter notebook
 ```
 
 ### 	
